@@ -1,0 +1,24 @@
+# Dataset files
+dataset/
+
+# Environment and secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# User uploads
+Uploads/
+Backend/Uploads/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Anaconda
+anaconda_projects/
+
+# Node
+node_modules/

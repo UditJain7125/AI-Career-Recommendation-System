@@ -1,0 +1,25 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "fastapi>=0.141.1",
+    "groq>=1.7.0",
+    "joblib>=1.6.0",
+    "mistralai>=2.10.0",
+    "numpy>=2.5.3",
+    "pandas>=3.0.5",
+    "psycopg2-binary>=2.9.13",
+    "psycopg[binary]>=3.3.5",
+    "python-dotenv>=1.2.3",
+    "python-jose[cryptography]>=3.5.0",
+    "python-multipart>=0.0.32",
+    "requests>=2.34.2",
+    "scikit-learn>=1.9.0",
+    "sqlalchemy>=2.0.52",
+    "uvicorn[standard]>=0.52.4",
+    "xgboost>=3.4.1",
+]
