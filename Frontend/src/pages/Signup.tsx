@@ -16,7 +16,7 @@ function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setError("");
