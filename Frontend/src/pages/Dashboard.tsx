@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { API_BASE_URL } from "../pages/config";
 
 interface Profile {
   id: number;
@@ -63,12 +64,12 @@ function Dashboard() {
         const [profileResponse, historyResponse] =
           await Promise.all([
             axios.get(
-              "http://127.0.0.1:8000/profile",
+              `${API_BASE_URL}/profile`,
               { headers }
             ),
 
             axios.get(
-              "http://127.0.0.1:8000/history",
+              `${API_BASE_URL}/history`,
               { headers }
             ),
           ]);
@@ -195,7 +196,7 @@ function Dashboard() {
 
   // Profile photo URL
   const profileImageUrl = profile?.profile_image
-    ? `http://127.0.0.1:8000/${profile.profile_image}`
+    ? `${API_BASE_URL}/${profile.profile_image}`
     : null;
 
   return (

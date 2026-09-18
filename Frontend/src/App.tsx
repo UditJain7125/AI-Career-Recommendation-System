@@ -9,7 +9,7 @@ import History from "./pages/History";
 import Profile from "./pages/Profile";
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/AI-Career-Recommendation-System/">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

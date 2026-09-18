@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../pages/config";
 
 interface ProfileData {
   name: string;
@@ -19,7 +20,7 @@ function Topbar() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/profile",
+          `${API_BASE_URL}/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -37,7 +38,7 @@ function Topbar() {
   }, []);
 
   const imageUrl = profile?.profile_image
-    ? `http://127.0.0.1:8000/${profile.profile_image}`
+    ? `${API_BASE_URL}/${profile.profile_image}`
     : null;
 
   return (

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { API_BASE_URL } from "../pages/config";
 
 interface LearningStep {
   step: number;
@@ -65,7 +66,7 @@ function History() {
         setError("");
 
         const response = await fetch(
-          "http://127.0.0.1:8000/history",
+          `${API_BASE_URL}/history`,
           {
             method: "GET",
             headers: {

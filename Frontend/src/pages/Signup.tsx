@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../pages/config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Signup() {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/signup",
+        `${API_BASE_URL}/signup`,
         {
           name,
           email,

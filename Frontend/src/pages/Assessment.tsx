@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { API_BASE_URL } from "../pages/config";
 
 interface Question {
   feature: string;
@@ -41,7 +42,7 @@ function Assessment() {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/assessment/questions"
+          `${API_BASE_URL}/assessment/questions`
         );
 
         if (
@@ -187,7 +188,7 @@ function Assessment() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/recommend",
+        `${API_BASE_URL}/recommend`,
         {
           answers: answers,
         },

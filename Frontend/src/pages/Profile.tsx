@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { API_BASE_URL } from "../pages/config";
 
 interface ProfileData {
   id: number;
@@ -38,7 +39,7 @@ function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/profile",
+          `${API_BASE_URL}/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -121,7 +122,7 @@ function Profile() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/profile/photo",
+        `${API_BASE_URL}/profile/photo`,
         formData,
         {
           headers: {
@@ -206,7 +207,7 @@ function Profile() {
   }
 
   const imageUrl = profile.profile_image
-    ? `http://127.0.0.1:8000/${profile.profile_image}`
+    ? `${API_BASE_URL}/${profile.profile_image}`
     : null;
 
   return (
