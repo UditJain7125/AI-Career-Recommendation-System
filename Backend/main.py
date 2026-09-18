@@ -61,6 +61,16 @@ app = FastAPI(
 # =========================================
 # STATIC FILES
 # =========================================
+# Create the upload directory before mounting it, so a fresh
+# deployment (with no uploaded photos yet) doesn't crash on boot.
+
+upload_base_dir = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "uploads",
+    "profile"
+)
+
+os.makedirs(upload_base_dir, exist_ok=True)
 
 app.mount(
     "/uploads",
