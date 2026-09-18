@@ -32,12 +32,13 @@ from schemas import (
     UserLogin
 )
 
-from database import SessionLocal
+from database import SessionLocal,engine
 
 from models import (
     User,
     Assessment,
-    Recommendation
+    Recommendation,
+    Base
 )
 
 from auth import (
@@ -56,7 +57,7 @@ app = FastAPI(
     title="AI Career Recommendation System",
     version="1.0.0"
 )
-
+Base.metadata.create_all(bind=engine)
 
 # =========================================
 # STATIC FILES
