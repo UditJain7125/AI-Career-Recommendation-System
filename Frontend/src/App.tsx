@@ -7,6 +7,7 @@ import Assessment from "./pages/Assessment";
 import Result from "./pages/Result";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
+import Agent from "./pages/Agent";
 function App() {
   return (
     <BrowserRouter basename="/AI-Career-Recommendation-System/">
@@ -19,6 +20,7 @@ function App() {
         <Route path="/result" element={<Result />} />
         <Route path="/history" element={<History />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/agent" element={<Agent />} />
       </Routes>
     </BrowserRouter>
   );

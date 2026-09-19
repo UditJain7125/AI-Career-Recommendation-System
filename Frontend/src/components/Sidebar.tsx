@@ -87,6 +87,20 @@ function Sidebar() {
             Assessment
           </Link>
 
+          {/* AI Career Assistant */}
+          <Link
+            to="/agent"
+            className={`sidebar-link ${
+              location.pathname === "/agent"
+                ? "active"
+                : ""
+            }`}
+            onClick={closeMenu}
+          >
+            <span>✦</span>
+            AI Assistant
+          </Link>
+
           {/* History */}
           <Link
             to="/history"

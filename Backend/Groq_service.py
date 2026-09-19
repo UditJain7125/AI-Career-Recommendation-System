@@ -123,3 +123,29 @@ Keep the information concise and student-friendly.
             "skills_to_improve": [],
             "learning_roadmap": []
         }
+
+def generate_agent_response(prompt: str):
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-20b",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a helpful AI Career Guidance Agent. "
+                    "Answer the student's career-related questions "
+                    "using the information provided in the prompt. "
+                    "Do not invent student data or change career "
+                    "recommendations. Keep answers clear, practical, "
+                    "and easy to understand."
+                )
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3,
+        max_tokens=1000
+    )
+
+    return response.choices[0].message.content

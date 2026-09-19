@@ -29,7 +29,8 @@ from recommendation.recommenation import recommend_careers
 from schemas import (
     StudentAssessment,
     UserCreate,
-    UserLogin
+    UserLogin,
+    AgentChatRequest
 )
 
 from database import SessionLocal,engine
@@ -47,7 +48,7 @@ from auth import (
 )
 
 from Groq_service import generate_career_explanation
-
+from Agent.career_agent import run_career_agent
 
 # =========================================
 # FASTAPI APP
@@ -349,6 +350,17 @@ def get_recommendations(
             detail=str(e)
         )
 
+@app.post("/agent/chat")
+def agent_chat(
+    request: AgentChatRequest,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id)
+):
+    return run_career_agent(
+        db,
+        user_id,
+        request.message
+    )
 # =========================================
 # RECOMMENDATION HISTORY
 # =========================================

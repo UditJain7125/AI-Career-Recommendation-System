@@ -17,4 +17,11 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
-  
+
+class AgentChatRequest(BaseModel):
+    message: str = Field(
+        ...,
+        min_length=1,
+        max_length=1000,
+        description="Student's career-related question"
+    )
