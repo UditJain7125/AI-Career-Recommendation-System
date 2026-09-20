@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -10,7 +10,7 @@ import Profile from "./pages/Profile";
 import Agent from "./pages/Agent";
 function App() {
   return (
-    <BrowserRouter basename="/AI-Career-Recommendation-System/">
+    <HashRouter basename="/AI-Career-Recommendation-System/">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -22,7 +22,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/agent" element={<Agent />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
