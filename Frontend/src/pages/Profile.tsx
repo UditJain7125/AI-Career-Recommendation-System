@@ -24,9 +24,14 @@ function Profile() {
 
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  // =========================================
+  // FETCH PROFILE
+  // =========================================
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -73,6 +78,10 @@ function Profile() {
     fetchProfile();
   }, [navigate]);
 
+  // =========================================
+  // SELECT PROFILE PHOTO
+  // =========================================
+
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -98,6 +107,10 @@ function Profile() {
     setError("");
     setMessage("");
   };
+
+  // =========================================
+  // UPLOAD PROFILE PHOTO
+  // =========================================
 
   const handleUpload = async () => {
     if (!selectedFile) {
@@ -170,6 +183,83 @@ function Profile() {
     }
   };
 
+  // =========================================
+  // DELETE PROFILE PHOTO
+  // =========================================
+
+  const handleDeletePhoto = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your profile photo?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    setDeleting(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}/profile/photo`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMessage(
+        response.data.message ||
+          "Profile photo deleted successfully."
+      );
+
+      setProfile((previous) => {
+        if (!previous) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          profile_image: null,
+        };
+      });
+
+      setSelectedFile(null);
+    } catch (err) {
+      console.error("Photo delete error:", err);
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
+
+        setError(
+          err.response?.data?.detail ||
+            "Unable to delete profile photo."
+        );
+      } else {
+        setError("Something went wrong.");
+      }
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // =========================================
+  // LOADING
+  // =========================================
+
   if (loading) {
     return (
       <div className="dashboard-layout">
@@ -187,6 +277,10 @@ function Profile() {
       </div>
     );
   }
+
+  // =========================================
+  // PROFILE NOT FOUND
+  // =========================================
 
   if (!profile) {
     return (
@@ -206,9 +300,17 @@ function Profile() {
     );
   }
 
+  // =========================================
+  // PROFILE IMAGE URL
+  // =========================================
+
   const imageUrl = profile.profile_image
     ? `${API_BASE_URL}/${profile.profile_image}`
     : null;
+
+  // =========================================
+  // PROFILE PAGE
+  // =========================================
 
   return (
     <div className="dashboard-layout">
@@ -224,9 +326,11 @@ function Profile() {
           <div className="profile-page">
 
             {/* PAGE HEADER */}
+
             <div className="profile-page-header">
 
               <div>
+
                 <p className="welcome-label">
                   ACCOUNT
                 </p>
@@ -239,30 +343,37 @@ function Profile() {
                   Manage your personal information
                   and profile photo.
                 </p>
+
               </div>
 
             </div>
 
 
             {/* PROFILE CARD */}
+
             <div className="profile-main-card">
 
 
               {/* LEFT SIDE */}
+
               <div className="profile-photo-section">
 
                 <div className="profile-photo-wrapper">
 
                   {imageUrl ? (
+
                     <img
                       src={imageUrl}
                       alt="Profile"
                       className="profile-photo"
                     />
+
                   ) : (
+
                     <div className="profile-photo-placeholder">
                       👤
                     </div>
+
                   )}
 
                 </div>
@@ -277,8 +388,11 @@ function Profile() {
                 </p>
 
 
-                {/* UPLOAD */}
+                {/* PHOTO CONTROLS */}
+
                 <div className="profile-upload">
+
+                  {/* CHOOSE PHOTO */}
 
                   <label
                     htmlFor="profile-photo-input"
@@ -290,13 +404,16 @@ function Profile() {
                   <input
                     id="profile-photo-input"
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp"
                     onChange={handleFileChange}
                     hidden
                   />
 
 
+                  {/* SELECTED FILE */}
+
                   {selectedFile && (
+
                     <>
                       <p className="selected-file">
                         {selectedFile.name}
@@ -313,6 +430,25 @@ function Profile() {
                           : "Upload Photo"}
                       </button>
                     </>
+
+                  )}
+
+
+                  {/* DELETE PHOTO */}
+
+                  {imageUrl && (
+
+                    <button
+                      type="button"
+                      className="profile-delete-button"
+                      onClick={handleDeletePhoto}
+                      disabled={deleting}
+                    >
+                      {deleting
+                        ? "Deleting..."
+                        : "🗑 Delete Photo"}
+                    </button>
+
                   )}
 
                 </div>
@@ -328,6 +464,7 @@ function Profile() {
 
 
               {/* RIGHT SIDE */}
+
               <div className="profile-information">
 
                 <h2>
@@ -342,6 +479,8 @@ function Profile() {
                 <div className="profile-info-grid">
 
 
+                  {/* FULL NAME */}
+
                   <div className="profile-info-item">
 
                     <span>
@@ -354,6 +493,8 @@ function Profile() {
 
                   </div>
 
+
+                  {/* EMAIL */}
 
                   <div className="profile-info-item">
 
@@ -368,6 +509,8 @@ function Profile() {
                   </div>
 
 
+                  {/* EDUCATION */}
+
                   <div className="profile-info-item">
 
                     <span>
@@ -381,6 +524,8 @@ function Profile() {
                   </div>
 
 
+                  {/* COURSE */}
+
                   <div className="profile-info-item">
 
                     <span>
@@ -393,6 +538,8 @@ function Profile() {
 
                   </div>
 
+
+                  {/* GRADUATION YEAR */}
 
                   <div className="profile-info-item">
 
@@ -415,18 +562,24 @@ function Profile() {
 
 
             {/* SUCCESS MESSAGE */}
+
             {message && (
+
               <div className="success-message">
                 ✓ {message}
               </div>
+
             )}
 
 
             {/* ERROR MESSAGE */}
+
             {error && (
+
               <div className="error-message">
                 {error}
               </div>
+
             )}
 
           </div>

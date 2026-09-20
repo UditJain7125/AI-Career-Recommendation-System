@@ -679,3 +679,55 @@ def upload_profile_photo(
         "profile_image": user.profile_image
 
     }
+
+# =========================================
+# DELETE PROFILE PHOTO
+# =========================================
+
+@app.delete("/profile/photo")
+def delete_profile_photo(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id)
+):
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    profile_image = cast(str | None, user.profile_image)
+
+    if profile_image is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No profile photo found"
+        )
+
+    
+    file_path = os.path.join(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        ),
+        profile_image
+    )
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    setattr(
+        user,
+        "profile_image",
+        None
+    )
+
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Profile photo deleted successfully",
+        "profile_image": None
+    }
