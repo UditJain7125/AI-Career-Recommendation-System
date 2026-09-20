@@ -1,0 +1,1538 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =====================================================================
+   UI UPGRADE LAYER
+   ---------------------------------------------------------------------
+   Load this AFTER index.css. It changes look and motion (colour,
+   type, shadow, radius, animation). The only layout changes are in
+   section 16, which adds mobile rules that index.css was missing.
+
+   In main.jsx:
+     import "./index.css";
+     import "./ui-upgrade.css";
+
+   Contents
+     1. Design tokens
+     2. Base, typography, focus
+     3. Buttons and forms
+     4. Sidebar and topbar
+     5. Hero banners
+     6. Cards, stats, panels
+     7. Progress bars
+     8. Assessment
+     9. Results and history
+    10. AI assistant chat
+    11. Auth pages
+    12. Home page
+    13. Loading, empty, feedback states
+    14. Keyframes
+    15. Reduced motion
+    16. Mobile layout gaps in index.css
+   ===================================================================== */
+
+
+/* =====================================================================
+   1. DESIGN TOKENS
+   Change a value here and it updates everywhere below.
+   ===================================================================== */
+
+:root {
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-300: #93c5fd;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --brand-900: #1e3a8a;
+  --brand-950: #172554;
+
+  --gold-100: #fef3c7;
+  --gold-500: #f59e0b;
+  --gold-600: #d97706;
+
+  --ink-900: #0f172a;
+  --ink-800: #1e293b;
+  --ink-700: #334155;
+  --ink-600: #475569;
+  /* 4.8:1 on white. Replaces #94a3b8 (2.6:1) for small text. */
+  --ink-500: #64748b;
+
+  --line: #e2e8f0;
+  --canvas: #f4f7fb;
+  --surface: #ffffff;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+
+  --sh-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 14px rgba(15, 23, 42, 0.05);
+  --sh-md: 0 2px 4px rgba(15, 23, 42, 0.04), 0 12px 32px rgba(15, 23, 42, 0.08);
+  --sh-brand: 0 1px 2px rgba(37, 99, 235, 0.25), 0 6px 16px rgba(37, 99, 235, 0.25);
+  --sh-brand-lift: 0 2px 4px rgba(37, 99, 235, 0.25), 0 10px 22px rgba(37, 99, 235, 0.32);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* =====================================================================
+   2. BASE, TYPOGRAPHY, FOCUS
+   ===================================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--canvas);
+  color: var(--ink-800);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+h1,
+h2 {
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  color: var(--brand-950);
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--brand-950);
+}
+
+/* Keyboard focus. The old CSS only styled :focus on two inputs. */
+button:focus-visible,
+a:focus-visible,
+.sidebar-link:focus-visible,
+.modern-rating-option:focus-visible,
+.mobile-menu-button:focus-visible,
+.profile-upload-button:focus-within {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
+/* Thin scrollbars that match the palette */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Small grey text that failed contrast (#94a3b8 on white = 2.6:1) */
+.topbar p,
+.stat-card p,
+.stat-card span,
+.panel-header p,
+.section-title p,
+.sidebar-logo span,
+.assessment-info span,
+.assessment-progress-text span,
+.assessment-progress-footer,
+.assessment-loading p,
+.career-label,
+.match-score span,
+.result-summary span,
+.result-loading p,
+.result-empty p,
+.roadmap-heading p,
+.ai-section-heading p,
+.ai-empty-message,
+.skills-empty,
+.empty-recommendation p,
+.profile-details span,
+.profile-information-subtitle,
+.profile-photo-note,
+.history-loading p,
+.history-assessment-label,
+.history-career-info p,
+.history-match-score span,
+.history-stat-card span,
+.history-empty p,
+.history-no-data,
+.history-ai-heading p,
+.history-ai-unavailable p,
+.history-roadmap-heading p {
+  color: var(--ink-500);
+}
+
+/* 9px is too small to read comfortably */
+.career-label {
+  font-size: 11px;
+}
+
+.career-description p {
+  font-size: 14px;
+}
+
+
+/* =====================================================================
+   3. BUTTONS AND FORMS
+   ===================================================================== */
+
+.primary-button,
+.dashboard-primary-button,
+.auth-button,
+.home-signup-button,
+.home-primary-button,
+.agent-input-container button {
+  background: var(--brand-600);
+  box-shadow: var(--sh-brand);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.primary-button:hover:not(:disabled),
+.dashboard-primary-button:hover:not(:disabled),
+.auth-button:hover:not(:disabled),
+.home-signup-button:hover,
+.home-primary-button:hover,
+.agent-input-container button:hover:not(:disabled) {
+  background: var(--brand-700);
+  box-shadow: var(--sh-brand-lift);
+  transform: translateY(-2px);
+}
+
+.primary-button:active:not(:disabled),
+.dashboard-primary-button:active:not(:disabled),
+.auth-button:active:not(:disabled),
+.home-signup-button:active,
+.home-primary-button:active,
+.agent-input-container button:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: var(--sh-brand);
+}
+
+.primary-button:disabled,
+.dashboard-primary-button:disabled,
+.auth-button:disabled,
+.agent-input-container button:disabled {
+  box-shadow: none;
+}
+
+.secondary-button,
+.dashboard-secondary-button,
+.home-secondary-button,
+.view-detail-button,
+.history-view-detail-button,
+.profile-upload-button,
+.view-history-button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.secondary-button:active,
+.dashboard-secondary-button:active,
+.home-secondary-button:active,
+.view-detail-button:active,
+.history-view-detail-button:active,
+.profile-upload-button:active {
+  transform: scale(0.97);
+}
+
+.form-group input {
+  border-color: var(--line);
+  border-radius: var(--r-sm);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.form-group input:hover {
+  border-color: #cbd5e1;
+}
+
+.form-group input:focus {
+  border-color: var(--brand-600);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+}
+
+.form-group label {
+  color: var(--ink-700);
+  font-size: 14px;
+}
+
+
+/* =====================================================================
+   4. SIDEBAR AND TOPBAR
+   ===================================================================== */
+
+.sidebar {
+  background: var(--surface);
+  border-right-color: var(--line);
+}
+
+.logo-icon {
+  background: linear-gradient(140deg, var(--brand-500), var(--brand-800));
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-logo h2 {
+  color: var(--brand-900);
+  letter-spacing: -0.02em;
+}
+
+.sidebar-link {
+  position: relative;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.sidebar-link span {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.sidebar-link:hover {
+  transform: translateX(3px);
+}
+
+.sidebar-link:hover span {
+  transform: scale(1.15);
+}
+
+.sidebar-link.active {
+  background: var(--brand-600);
+  box-shadow: var(--sh-brand);
+}
+
+.sidebar-link.active:hover {
+  transform: none;
+}
+
+.sidebar-logout {
+  transition: background-color 0.2s ease;
+}
+
+/* Frosted topbar that stays in view while scrolling */
+.topbar {
+  border-bottom-color: var(--line);
+}
+
+/* Desktop only: on mobile the fixed menu button must stay above the drawer overlay */
+@media (min-width: 901px) {
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    backdrop-filter: saturate(160%) blur(12px);
+  }
+}
+
+.topbar h2 {
+  color: var(--ink-900);
+}
+
+.profile-avatar,
+.large-avatar {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand-100);
+  transition: box-shadow 0.25s ease;
+}
+
+.profile-avatar:hover,
+.large-avatar:hover {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand-300);
+}
+
+/* Mobile drawer: fade the backdrop in, lift the panel off the page */
+.sidebar-overlay {
+  animation: fade-in 0.25s ease both;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+.sidebar.mobile-sidebar-open {
+  box-shadow: 12px 0 40px rgba(15, 23, 42, 0.2);
+}
+
+.mobile-menu-button {
+  box-shadow: var(--sh-sm);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.mobile-menu-button:active {
+  transform: scale(0.92);
+}
+
+
+/* =====================================================================
+   5. HERO BANNERS
+   Layered soft glows replace the flat two-colour gradient.
+   ===================================================================== */
+
+.welcome-section,
+.result-hero,
+.history-hero {
+  background:
+    radial-gradient(420px 180px at 100% 0%, rgba(59, 130, 246, 0.16), transparent 70%),
+    radial-gradient(360px 160px at 0% 100%, rgba(99, 102, 241, 0.10), transparent 70%),
+    linear-gradient(135deg, #eff6ff, #ffffff);
+  border-color: var(--brand-100);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.result-hero-icon,
+.history-hero-icon {
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16);
+  animation: icon-pop 0.7s var(--ease-spring) 0.25s both;
+}
+
+.welcome-section h1,
+.result-hero h1,
+.history-hero h1,
+.assessment-title h1,
+.agent-header h1,
+.profile-page-header h1 {
+  color: var(--brand-950);
+  letter-spacing: -0.025em;
+}
+
+.welcome-label,
+.home-label,
+.agent-label {
+  color: var(--brand-600);
+}
+
+
+/* =====================================================================
+   6. CARDS, STATS, PANELS
+   One radius scale, one shadow scale, no hover-lift on things you cannot click.
+   ===================================================================== */
+
+.card,
+.dashboard-panel,
+.stat-card,
+.career-result-card,
+.history-assessment-card,
+.modern-question-card,
+.assessment-progress-card,
+.profile-main-card,
+.auth-card {
+  border-color: var(--line);
+  box-shadow: var(--sh-sm);
+}
+
+.stat-card {
+  border-radius: var(--r-lg);
+}
+
+.stat-icon {
+  background: linear-gradient(145deg, var(--brand-50), var(--brand-100));
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
+.stat-card h2,
+.stat-card strong {
+  color: var(--ink-900);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-panel {
+  border-radius: var(--r-lg);
+}
+
+.result-summary > div,
+.history-stat-card {
+  border-color: var(--line);
+  box-shadow: var(--sh-sm);
+}
+
+.result-summary strong {
+  color: var(--ink-900);
+}
+
+/* Recent recommendations are the one clickable-feeling list on the dashboard */
+.recent-recommendation-card {
+  transition: background-color 0.2s ease, padding 0.2s ease;
+}
+
+.recent-rank {
+  background: var(--brand-100);
+}
+
+.view-history-button:hover {
+  transform: translateX(2px);
+}
+
+
+/* =====================================================================
+   7. PROGRESS BARS
+   They now grow in from zero on load. Bars whose width is set inline
+   never animated before, because there was no previous width to move from.
+   ===================================================================== */
+
+.modern-progress-bar,
+.match-progress,
+.history-match-bar,
+.recent-match-bar {
+  background: #e8eef7;
+}
+
+.modern-progress-fill,
+.match-progress-fill,
+.history-match-fill,
+.recent-match-bar div {
+  background: linear-gradient(90deg, var(--brand-500), var(--brand-700));
+  transform-origin: left center;
+  animation: bar-grow 1s var(--ease-out) 0.3s both;
+}
+
+/* Stagger the bars down a list of results */
+.results-list > :nth-child(2) .match-progress-fill,
+.history-recommendations > :nth-child(2) .history-match-fill {
+  animation-delay: 0.42s;
+}
+
+.results-list > :nth-child(3) .match-progress-fill,
+.history-recommendations > :nth-child(3) .history-match-fill {
+  animation-delay: 0.54s;
+}
+
+.results-list > :nth-child(4) .match-progress-fill,
+.history-recommendations > :nth-child(4) .history-match-fill {
+  animation-delay: 0.66s;
+}
+
+.results-list > :nth-child(n + 5) .match-progress-fill,
+.history-recommendations > :nth-child(n + 5) .history-match-fill {
+  animation-delay: 0.78s;
+}
+
+/* The assessment bar is "live", so give it a slow sheen while in progress */
+.modern-progress-fill {
+  position: relative;
+  overflow: hidden;
+  transition: width 0.5s var(--ease-out);
+}
+
+.modern-progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-100%);
+  animation: sheen 2.6s ease-in-out 1.4s infinite;
+}
+
+.progress-percentage {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* =====================================================================
+   8. ASSESSMENT
+   ===================================================================== */
+
+.modern-question-card {
+  border-radius: var(--r-lg);
+}
+
+.modern-question-card h2 {
+  color: var(--ink-900);
+  letter-spacing: -0.015em;
+}
+
+.question-badge {
+  background: var(--brand-50);
+  border: 1px solid var(--brand-100);
+}
+
+.modern-rating-option {
+  border-color: var(--line);
+  border-radius: var(--r-md);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s var(--ease-out),
+    color 0.2s ease;
+}
+
+.modern-rating-option:hover:not(:disabled):not(.selected) {
+  border-color: var(--brand-300);
+  background: var(--brand-50);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+}
+
+.modern-rating-option:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Fires each time an answer is picked */
+.modern-rating-option.selected {
+  background: linear-gradient(160deg, var(--brand-500), var(--brand-700));
+  border-color: var(--brand-700);
+  box-shadow: var(--sh-brand);
+  animation: select-pop 0.42s var(--ease-spring);
+}
+
+.rating-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.assessment-tip {
+  border-radius: var(--r-md);
+}
+
+/* Fade in when the question content mounts */
+.modern-question-card h2,
+.modern-rating {
+  animation: fade-in 0.35s ease both;
+}
+
+
+/* =====================================================================
+   9. RESULTS AND HISTORY
+   ===================================================================== */
+
+.career-result-card {
+  border-radius: var(--r-lg);
+}
+
+/* Top match: an inset accent bar instead of a heavier shadow */
+.career-result-card.top-career {
+  border-color: var(--brand-200);
+  box-shadow:
+    inset 0 3px 0 var(--brand-600),
+    0 12px 32px rgba(37, 99, 235, 0.10);
+}
+
+.career-title-area h2 {
+  color: var(--ink-900);
+  letter-spacing: -0.015em;
+}
+
+.top-career .career-title-area h2 {
+  color: var(--brand-800);
+}
+
+.career-rank {
+  background: var(--brand-50);
+  box-shadow: inset 0 0 0 1px var(--brand-100);
+}
+
+.career-rank.gold-rank {
+  background: linear-gradient(145deg, var(--gold-100), #fde68a);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  animation: icon-pop 0.7s var(--ease-spring) 0.4s both;
+}
+
+.match-score strong {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.ai-section {
+  border-left: 3px solid var(--brand-300);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+}
+
+.skill-tag {
+  transition: background-color 0.2s ease, transform 0.25s var(--ease-out);
+}
+
+.skill-tag:hover {
+  transform: translateY(-1px);
+}
+
+.roadmap-number {
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
+}
+
+.result-actions-modern button {
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.result-actions-modern button:active {
+  transform: scale(0.97);
+}
+
+/* View in detail: content opens with a short reveal */
+.career-detail-content,
+.history-detail-content {
+  animation: reveal-down 0.4s var(--ease-out) both;
+}
+
+.history-assessment-card {
+  border-radius: var(--r-lg);
+}
+
+.history-recommendation {
+  border-radius: var(--r-md);
+}
+
+.history-recommendation.history-top-recommendation {
+  background: linear-gradient(100deg, var(--brand-50), #f8fbff);
+}
+
+/* Reasons and roadmap steps land one after another when a card opens */
+.reason-list > *,
+.roadmap-step {
+  animation: rise-in 0.45s var(--ease-out) both;
+}
+
+.reason-list > :nth-child(2),
+.roadmap-step:nth-child(2) {
+  animation-delay: 0.07s;
+}
+
+.reason-list > :nth-child(3),
+.roadmap-step:nth-child(3) {
+  animation-delay: 0.14s;
+}
+
+.reason-list > :nth-child(4),
+.roadmap-step:nth-child(4) {
+  animation-delay: 0.21s;
+}
+
+.reason-list > :nth-child(n + 5),
+.roadmap-step:nth-child(n + 5) {
+  animation-delay: 0.28s;
+}
+
+
+/* =====================================================================
+   PAGE ENTRANCE
+   One short staggered sequence per page, on load only.
+   ===================================================================== */
+
+.dashboard-content > *,
+.result-page > *,
+.assessment-page > *,
+.history-page > *,
+.profile-page > *,
+.agent-page > * {
+  animation: rise-in 0.55s var(--ease-out) both;
+}
+
+.dashboard-content > :nth-child(2),
+.result-page > :nth-child(2),
+.assessment-page > :nth-child(2),
+.history-page > :nth-child(2),
+.profile-page > :nth-child(2),
+.agent-page > :nth-child(2) {
+  animation-delay: 0.07s;
+}
+
+.dashboard-content > :nth-child(3),
+.result-page > :nth-child(3),
+.assessment-page > :nth-child(3),
+.history-page > :nth-child(3),
+.profile-page > :nth-child(3),
+.agent-page > :nth-child(3) {
+  animation-delay: 0.14s;
+}
+
+.dashboard-content > :nth-child(4),
+.result-page > :nth-child(4),
+.assessment-page > :nth-child(4),
+.history-page > :nth-child(4),
+.profile-page > :nth-child(4),
+.agent-page > :nth-child(4) {
+  animation-delay: 0.21s;
+}
+
+.dashboard-content > :nth-child(n + 5),
+.result-page > :nth-child(n + 5),
+.assessment-page > :nth-child(n + 5),
+.history-page > :nth-child(n + 5),
+.profile-page > :nth-child(n + 5),
+.agent-page > :nth-child(n + 5) {
+  animation-delay: 0.28s;
+}
+
+/* The list wrapper itself stays still; its cards animate instead */
+.result-page > .results-list,
+.history-page > .history-list {
+  animation: none;
+}
+
+/* Result and history lists: cards arrive in order */
+.results-list > *,
+.history-list > * {
+  animation: rise-in 0.55s var(--ease-out) both;
+}
+
+.results-list > :nth-child(1),
+.history-list > :nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.results-list > :nth-child(2),
+.history-list > :nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.results-list > :nth-child(3),
+.history-list > :nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.results-list > :nth-child(4),
+.history-list > :nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.results-list > :nth-child(n + 5),
+.history-list > :nth-child(n + 5) {
+  animation-delay: 0.5s;
+}
+
+
+/* =====================================================================
+   10. AI ASSISTANT CHAT
+   Assistant replies read like a document (no bubble, avatar + name).
+   Your messages are a compact bubble. The composer is one rounded bar.
+   CSS only: it restyles the existing class names, no JSX changes.
+   ===================================================================== */
+
+/* Header: same banner treatment as the other pages */
+.agent-header {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 30px;
+  background:
+    radial-gradient(420px 180px at 100% 0%, rgba(59, 130, 246, 0.16), transparent 70%),
+    radial-gradient(360px 160px at 0% 100%, rgba(99, 102, 241, 0.10), transparent 70%),
+    linear-gradient(135deg, #eff6ff, #ffffff);
+  border: 1px solid var(--brand-100);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.agent-header::after {
+  content: "\2726";
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  margin-top: -48px;
+  font-size: 96px;
+  line-height: 1;
+  color: var(--brand-500);
+  opacity: 0.14;
+  pointer-events: none;
+  animation: float 5s ease-in-out infinite;
+}
+
+.agent-header h1,
+.agent-header p {
+  max-width: 640px;
+}
+
+/* Live dot before the label */
+.agent-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agent-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: live-pulse 2s ease-out infinite;
+}
+
+
+/* Suggested questions: cards instead of loose pills */
+.agent-suggestions-title {
+  color: var(--ink-500);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.agent-suggestion-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.agent-suggestion-button {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink-700);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--sh-sm);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.agent-suggestion-button::before {
+  content: "\2726";
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--brand-50);
+  color: var(--brand-600);
+  font-size: 12px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.agent-suggestion-button:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--brand-300);
+  color: var(--brand-900);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+  transform: translateY(-2px);
+}
+
+.agent-suggestion-button:hover:not(:disabled)::before {
+  background: var(--brand-600);
+  color: #ffffff;
+}
+
+.agent-suggestion-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.agent-suggestion-list > * {
+  animation: rise-in 0.45s var(--ease-out) both;
+}
+
+.agent-suggestion-list > :nth-child(2) { animation-delay: 0.06s; }
+.agent-suggestion-list > :nth-child(3) { animation-delay: 0.12s; }
+.agent-suggestion-list > :nth-child(4) { animation-delay: 0.18s; }
+.agent-suggestion-list > :nth-child(n + 5) { animation-delay: 0.24s; }
+
+
+/* Chat window */
+.agent-chat-container {
+  border-color: var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--sh-md);
+}
+
+.agent-messages {
+  padding: 30px 32px 20px;
+  gap: 26px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  scroll-behavior: smooth;
+}
+
+.agent-message {
+  animation: msg-in-left 0.4s var(--ease-out) both;
+}
+
+.agent-message-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.agent-message-content {
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+
+/* Assistant: open text with an avatar, no bubble */
+.agent-assistant-message {
+  max-width: 92%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--ink-700);
+}
+
+.agent-assistant-message .agent-message-label {
+  color: var(--ink-800);
+}
+
+.agent-assistant-message .agent-message-label::before {
+  content: "\2726";
+  flex-shrink: 0;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: linear-gradient(140deg, var(--brand-500), var(--brand-800));
+  color: #ffffff;
+  font-size: 12px;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+/* Line the text up under the name, not under the avatar */
+.agent-assistant-message .agent-message-content {
+  padding-left: 36px;
+}
+
+
+/* You: compact bubble. The "You" label stays for screen readers only. */
+.agent-user-message {
+  max-width: 75%;
+  padding: 12px 18px;
+  border-radius: 20px 20px 6px 20px;
+  background: linear-gradient(160deg, var(--brand-500), var(--brand-700));
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+  animation-name: msg-in-right;
+}
+
+.agent-user-message .agent-message-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* Composer: one rounded bar that lights up while you type */
+.agent-input-container {
+  align-items: center;
+  gap: 8px;
+  margin: 0 20px 20px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--sh-sm);
+  transition: border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.agent-input-container:focus-within {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.agent-input-container input,
+.agent-input-container input:focus {
+  height: 44px;
+  padding: 0 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.agent-input-container input::placeholder {
+  color: var(--ink-500);
+}
+
+.agent-input-container button {
+  border-radius: 13px;
+}
+
+@media (max-width: 600px) {
+  .agent-header {
+    padding: 22px 20px;
+  }
+
+  .agent-header::after {
+    display: none;
+  }
+
+  .agent-messages {
+    padding: 22px 16px 14px;
+    gap: 22px;
+  }
+
+  .agent-assistant-message {
+    max-width: 100%;
+  }
+
+  .agent-assistant-message .agent-message-content {
+    padding-left: 0;
+  }
+
+  .agent-user-message {
+    max-width: 88%;
+  }
+
+  .agent-input-container {
+    margin: 0 12px 12px;
+  }
+
+  /* Swipeable row so the chat stays near the top of the screen */
+  .agent-suggestion-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .agent-suggestion-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .agent-suggestion-button {
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+  }
+}
+
+
+/* =====================================================================
+   11. AUTH PAGES
+   ===================================================================== */
+
+.auth-page {
+  background:
+    radial-gradient(600px 320px at 15% 10%, rgba(59, 130, 246, 0.14), transparent 70%),
+    radial-gradient(520px 300px at 90% 95%, rgba(99, 102, 241, 0.12), transparent 70%),
+    var(--canvas);
+}
+
+.auth-card {
+  border-radius: 20px;
+  box-shadow: var(--sh-md);
+  animation: card-in 0.6s var(--ease-out) both;
+}
+
+.auth-header {
+  background:
+    radial-gradient(320px 160px at 100% 0%, rgba(96, 165, 250, 0.35), transparent 70%),
+    linear-gradient(145deg, var(--brand-800), var(--brand-950));
+}
+
+.auth-form h2 {
+  color: var(--brand-950);
+}
+
+.auth-form .form-group {
+  animation: rise-in 0.5s var(--ease-out) both;
+}
+
+.auth-form .form-group:nth-of-type(1) { animation-delay: 0.15s; }
+.auth-form .form-group:nth-of-type(2) { animation-delay: 0.22s; }
+.auth-form .form-group:nth-of-type(3) { animation-delay: 0.29s; }
+.auth-form .form-group:nth-of-type(4) { animation-delay: 0.36s; }
+.auth-form .form-group:nth-of-type(n + 5) { animation-delay: 0.43s; }
+
+
+/* =====================================================================
+   12. HOME PAGE
+   The hero is the one big moment: a slow drifting glow behind a headline
+   that assembles line by line.
+   ===================================================================== */
+
+.home-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  backdrop-filter: saturate(160%) blur(12px);
+  border-bottom-color: var(--line);
+}
+
+.home-logo {
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+}
+
+.home-hero {
+  background:
+    radial-gradient(520px 300px at 20% 25%, rgba(59, 130, 246, 0.20), transparent 70%),
+    radial-gradient(480px 280px at 80% 70%, rgba(99, 102, 241, 0.16), transparent 70%),
+    linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+  background-size: 140% 140%, 140% 140%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: glow-drift 16s ease-in-out infinite alternate;
+}
+
+.home-hero h1 {
+  color: var(--ink-900);
+  letter-spacing: -0.035em;
+}
+
+.home-hero h1 span {
+  color: var(--brand-600);
+}
+
+.home-hero-content > * {
+  animation: rise-in 0.7s var(--ease-out) both;
+}
+
+.home-hero-content > :nth-child(1) { animation-delay: 0.05s; }
+.home-hero-content > :nth-child(2) { animation-delay: 0.15s; }
+.home-hero-content > :nth-child(3) { animation-delay: 0.3s; }
+.home-hero-content > :nth-child(4) { animation-delay: 0.45s; }
+.home-hero-content > :nth-child(n + 5) { animation-delay: 0.55s; }
+
+.home-secondary-button:hover {
+  transform: translateY(-1px);
+}
+
+.home-step-number {
+  background: linear-gradient(145deg, var(--brand-50), var(--brand-100));
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.1);
+}
+
+.home-step-card,
+.home-feature-card {
+  border-color: var(--line);
+}
+
+.home-feature-card span {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.home-feature-card:hover span {
+  transform: scale(1.12) rotate(-6deg);
+}
+
+.home-footer {
+  background: var(--ink-900);
+}
+
+/* Cards below the fold reveal as they scroll into view.
+   Browsers without scroll-driven animation just show them normally. */
+@supports (animation-timeline: view()) {
+  .home-step-card,
+  .home-feature-card {
+    animation: rise-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+}
+
+
+/* =====================================================================
+   13. LOADING, EMPTY, FEEDBACK STATES
+   ===================================================================== */
+
+/* Wait a beat before showing loaders so quick loads do not flash */
+.dashboard-loading,
+.assessment-loading,
+.result-loading,
+.history-loading {
+  animation: fade-in 0.4s ease 0.15s both;
+}
+
+.loading-spinner {
+  filter: drop-shadow(0 4px 10px rgba(37, 99, 235, 0.3));
+}
+
+.empty-icon,
+.history-empty-icon {
+  animation: float 3.6s ease-in-out infinite;
+}
+
+/* Errors shake once: motion that says "that did not work" */
+.error-message,
+.assessment-error,
+.history-error {
+  animation: shake 0.45s ease both;
+}
+
+.success-message {
+  animation: rise-in 0.4s var(--ease-out) both;
+}
+
+.profile-photo,
+.profile-photo-placeholder {
+  transition: transform 0.35s var(--ease-out), box-shadow 0.3s ease;
+}
+
+.profile-photo:hover,
+.profile-photo-placeholder:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+}
+
+.profile-info-item {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.profile-info-item:hover {
+  border-color: var(--brand-200);
+}
+
+
+/* =====================================================================
+   16. MOBILE LAYOUT GAPS IN index.css
+   index.css had no small-screen rules for the dashboard welcome banner,
+   the stat cards, the two-column panels or the assessment info row, so
+   they stayed in desktop layouts and got clipped on phones.
+   ===================================================================== */
+
+@media (max-width: 900px) {
+  /* Title wraps to two lines on phones, so let the bar grow */
+  .topbar {
+    height: auto;
+    min-height: 72px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .topbar h2 {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
+  .topbar p {
+    font-size: 12px;
+  }
+
+  /* Labels were nowrap, which clipped "Total Assessments" and friends */
+  .stat-card p,
+  .stat-card span {
+    white-space: normal;
+  }
+
+  .dashboard-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .welcome-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 22px;
+  }
+
+  .welcome-section h1 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .welcome-section .dashboard-primary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .assessment-info {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-panel {
+    padding: 20px;
+  }
+}
+
+/* Mobile drawer: fit the visible screen and scroll.
+   index.css used height/min-height: 100vh (with !important). On phones 100vh
+   is taller than the visible area, so Logout ended up off-screen and the
+   drawer had nothing to scroll. Pinning top and bottom fits what you can see. */
+@media (max-width: 900px) {
+  .sidebar {
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Overflow instead of squashing when the screen is short */
+  .sidebar > * {
+    flex-shrink: 0;
+  }
+}
+
+
+/* =====================================================================
+   14. KEYFRAMES
+   ===================================================================== */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes reveal-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes sheen {
+  0%   { transform: translateX(-100%); }
+  55%, 100% { transform: translateX(100%); }
+}
+
+@keyframes select-pop {
+  0%   { transform: scale(0.94); }
+  60%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes icon-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes msg-in-left {
+  from {
+    opacity: 0;
+    transform: translate(-14px, 8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes msg-in-right {
+  from {
+    opacity: 0;
+    transform: translate(14px, 8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes glow-drift {
+  from { background-position: 0% 0%, 100% 100%, 0 0; }
+  to   { background-position: 100% 60%, 0% 30%, 0 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70%, 100% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(5px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(2px); }
+}
+
+
+/* =====================================================================
+   15. REDUCED MOTION
+   Anyone who has asked their OS to limit motion gets a still interface.
+   ===================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .home-step-card,
+  .home-feature-card {
+    animation: none !important;
+  }
+}
