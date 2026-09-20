@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -8,9 +9,10 @@ import Result from "./pages/Result";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
 import Agent from "./pages/Agent";
+
 function App() {
   return (
-    <HashRouter basename="/AI-Career-Recommendation-System/">
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
