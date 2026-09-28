@@ -2249,77 +2249,67 @@ a:focus-visible,
   }
 }
 
-/* =====================================================================
-   AUTH HOME ARROW
-   ===================================================================== */
+/* =========================================
+   BACK TO HOME ARROW
+========================================= */
 
 .auth-home-arrow {
   position: fixed;
-
   top: 22px;
   left: 22px;
+  z-index: 1000;
 
-  z-index: 100;
-
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid var(--line);
+  border: 1px solid rgba(37, 99, 235, 0.25);
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.9);
+  background: #ffffff;
+  color: #2563eb;
 
-  color: var(--ink-700);
-
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
 
   text-decoration: none;
 
-  box-shadow: var(--sh-sm);
-
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  box-shadow:
+    0 5px 15px rgba(15, 23, 42, 0.16),
+    0 0 0 3px rgba(37, 99, 235, 0.06);
 
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.25s var(--ease-out),
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
     box-shadow 0.25s ease;
 }
 
 .auth-home-arrow:hover {
-  background: var(--brand-600);
-
-  border-color: var(--brand-600);
-
-  color: white;
+  background: #2563eb;
+  color: #ffffff;
 
   transform: translateX(-3px);
 
-  box-shadow: var(--sh-brand);
+  box-shadow:
+    0 8px 22px rgba(37, 99, 235, 0.30),
+    0 0 0 4px rgba(37, 99, 235, 0.08);
 }
 
 .auth-home-arrow:active {
   transform: translateX(-3px) scale(0.92);
 }
 
-
-/* Mobile */
-
 @media (max-width: 600px) {
   .auth-home-arrow {
     top: 14px;
     left: 14px;
-
-    width: 34px;
-    height: 34px;
-
-    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
   }
 }
