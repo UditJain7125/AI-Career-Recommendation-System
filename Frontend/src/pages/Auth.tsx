@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../pages/config";
 
 function Auth() {
@@ -168,6 +168,23 @@ function Auth() {
   return (
     <main className="auth-page">
 
+      {/* =========================================
+          BACK TO HOME BUTTON
+      ========================================= */}
+
+      <Link
+        to="/"
+        className="auth-home-arrow"
+        aria-label="Back to home"
+      >
+        ←
+      </Link>
+
+
+      {/* =========================================
+          FLIP CONTAINER
+      ========================================= */}
+
       <div
         className={`auth-flip-container ${
           isLogin ? "auth-flipped" : ""
@@ -228,6 +245,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Email */}
 
                 <div className="form-group">
@@ -248,6 +266,7 @@ function Auth() {
                   />
 
                 </div>
+
 
                 {/* Password */}
 
@@ -270,6 +289,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Education */}
 
                 <div className="form-group">
@@ -290,6 +310,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Course */}
 
                 <div className="form-group">
@@ -309,6 +330,7 @@ function Auth() {
                   />
 
                 </div>
+
 
                 {/* Graduation Year */}
 
@@ -332,6 +354,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Error */}
 
                 {error && (
@@ -339,6 +362,7 @@ function Auth() {
                     {error}
                   </div>
                 )}
+
 
                 {/* Signup Button */}
 
@@ -353,6 +377,7 @@ function Auth() {
                 </button>
 
               </form>
+
 
               {/* Switch to Login */}
 
@@ -427,6 +452,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Password */}
 
                 <div className="form-group">
@@ -448,6 +474,7 @@ function Auth() {
 
                 </div>
 
+
                 {/* Error */}
 
                 {error && (
@@ -455,6 +482,7 @@ function Auth() {
                     {error}
                   </div>
                 )}
+
 
                 {/* Login Button */}
 
@@ -469,6 +497,7 @@ function Auth() {
                 </button>
 
               </form>
+
 
               {/* Switch to Signup */}
 
